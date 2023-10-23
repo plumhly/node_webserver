@@ -1,6 +1,6 @@
 const { json } = require('express');
 const User = require('../model/user');
-const { hash, compare } = require('../utils/encript');
+const { hash, compare, sign } = require('../utils/encript');
 
 const register = async (req, res, next) => {
   res.set('content-type', 'application/json;charset=utf-8');
@@ -68,8 +68,11 @@ const login = async (req, res, next) => {
     return;
   }
 
-  req.session.username = username;
-  console.log(req.session);
+  // req.session.username = username;
+  // console.log(req.session);
+
+  const token = sign({ username }, 'plum');
+  res.set('X-Access-Token', token);
 
   res.render('success', {
     data: JSON.stringify('登录成功'),
